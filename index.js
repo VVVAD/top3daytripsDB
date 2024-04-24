@@ -10,6 +10,14 @@ const connectDB = require("./connectMongo");
 
 connectDB();
 
+const cors=require("cors");
+const corsOptions ={
+   origin:'*', 
+   credentials:true,            //access-control-allow-credentials:true
+   optionSuccessStatus:200,
+}
+
+app.use(cors(corsOptions)) // Use this after the variable declaration
 const UserModel = require("./models/user.model");
 const redis = require('./redis')
 
@@ -20,13 +28,6 @@ const deleteKeys = async (pattern) => {
     redis.del(keys)
   }
 }
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:5500'); // Allow requests from localhost
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-});
 
 app.get("/api/userData", async (req, res) => {
   const { limit = 5, orderBy = "name", sortBy = "asc", keyword } = req.query;
