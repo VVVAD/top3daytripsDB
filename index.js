@@ -28,19 +28,15 @@ const deleteKeys = async (pattern) => {
     redis.del(keys)
   }
 }
-// Handle POST request to store the image data
+// Route to store image data in the database
 app.post('/api/userdata', async (req, res) => {
   try {
-    // Extract image data from request body
-    const { image } = req.body;
-
-    // Create a new image document and save it to MongoDB
-    const newImage = new Image({ imageData: image });
-    await newImage.save();
-
-    res.status(201).send('Image saved successfully');
+    const { userId, imgURL } = req.body;
+    const image = new Image({ userId, imgURL });
+    await image.save();
+    res.status(201).send('Image data stored successfully');
   } catch (error) {
-    console.error('Error saving image:', error);
+    console.error('Error storing image data:', error);
     res.status(500).send('Internal server error');
   }
 });
