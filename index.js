@@ -53,7 +53,7 @@ app.get('/api/userdata/:userId', async (req, res) => {
   try {
     // Retrieve the image data from MongoDB based on the provided ID
     const { userId } = req.params;
-    const imageData = await Image.findById(userId);
+    const imageData = await Image.findOne({ userId: userId });
 
     if (!imageData) {
       return res.status(404).send('Image not found');
