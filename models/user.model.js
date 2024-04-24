@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const userSchema = new Schema({
-  imageData: String,
-  country: String
+  userId:String,
+  imageData: { type: String, required: true }
 }, {
     timestamps: true
 })
