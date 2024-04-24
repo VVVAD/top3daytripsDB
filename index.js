@@ -41,50 +41,7 @@ app.post('/api/userdata', async (req, res) => {
   }
 });
 
-app.get("/api/userData", async (req, res) => {
-  const { limit = 5, orderBy = "name", sortBy = "asc", keyword } = req.query;
-  let page = +req.query?.page;
 
-  if (!page || page <= 0) page = 1;
-
-  const skip = (page - 1) * + limit;
-
-  const query = {};
-
-  if (keyword) query.name = { $regex: keyword, $options: "i" };
-
-  const key = `User::${JSON.stringify({ query, page, limit, orderBy, sortBy })}`
-  let response = null
-  try {
-    const cache = await redis.get(key)
-    if (cache) {
-      response = JSON.parse(cache)
-    } else {
-      const data = await UserModel.find(query)
-        .skip(skip)
-        .limit(limit)
-        .sort({ [orderBy]: sortBy });
-      const totalItems = await UserModel.countDocuments(query);
-
-      response = {
-        msg: "Ok",
-        data,
-        totalItems,
-        totalPages: Math.ceil(totalItems / limit),
-        limit: +limit,
-        currentPage: page,
-      }
-
-      redis.setex(key, 600, JSON.stringify(response))
-    }
-
-    return res.status(200).json(response);
-  } catch (error) {
-    return res.status(500).json({
-      msg: error.message,
-    });
-  }
-});
 
 // Route to retrieve the image data
 app.get('/api/userdata/:userId', async (req, res) => {
