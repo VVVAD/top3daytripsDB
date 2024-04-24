@@ -86,24 +86,22 @@ app.get("/api/userData", async (req, res) => {
   }
 });
 
-app.get("/api/userData/:userId", async (req, res) => {
+// Route to retrieve the image data
+app.get('/api/userdata/:userId', async (req, res) => {
   try {
-    const data = await UserModel.findById(req.params.userId);
+    // Retrieve the image data from MongoDB based on the provided ID
+    const { userId } = req.params;
+    const imageData = await Image.findById(userId);
 
-    if (data) {
-      return res.status(200).json({
-        msg: "Ok",
-        data,
-      });
+    if (!imageData) {
+      return res.status(404).send('Image not found');
     }
 
-    return res.status(404).json({
-      msg: "Not Found",
-    });
+    // Send the image data back to the client
+    res.send(imageData);
   } catch (error) {
-    return res.status(500).json({
-      msg: error.message,
-    });
+    console.error('Error retrieving image:', error);
+    res.status(500).send('Internal server error');
   }
 });
 
