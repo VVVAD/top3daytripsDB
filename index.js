@@ -148,17 +148,15 @@ app.put('/api/userdata/:userId', async (req, res) => {
   }
 });
 
-app.delete("/api/userData/:userId", async (req, res) => {
+// Route to delete image data from the database
+app.delete('/api/userdata/:userId', async (req, res) => {
   try {
-    await UserModel.findByIdAndDelete(req.params.id);
-    deleteKeys('User')
-    return res.status(200).json({
-      msg: "Ok",
-    });
+    const { userId } = req.params;
+    await Image.deleteOne({ userId });
+    res.status(200).send('Image data removed successfully');
   } catch (error) {
-    return res.status(500).json({
-      msg: error.message,
-    });
+    console.error('Error removing image data:', error);
+    res.status(500).send('Internal server error');
   }
 });
 
