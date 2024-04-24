@@ -1,33 +1,17 @@
-const express = require("express");
-
+const express = require('express');
+const mongoose = require('mongoose');
 const app = express();
 
-require("dotenv").config();
+// Connect to MongoDB
+mongoose.connect(MONGODB_CONNECT_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-app.use(express.json());
+// Define a schema and model for storing image data (assuming Mongoose)
+const imageSchema = new mongoose.Schema({
+  userId: { type: String, required: true },
+  imgURL: { type: String, required: true },
+});
+const Image = mongoose.model('Image', imageSchema);
 
-const connectDB = require("./connectMongo");
-
-connectDB();
-
-const cors = require("cors");
-const corsOptions = {
-  origin: '*',
-  credentials: true,            //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
-}
-
-app.use(cors(corsOptions)) // Use this after the variable declaration
-const UserModel = require("./models/user.model");
-const redis = require('./redis')
-
-const deleteKeys = async (pattern) => {
-  const keys = await redis.keys(`${pattern}::*`)
-  console.log(keys)
-  if (keys.length > 0) {
-    redis.del(keys)
-  }
-}
 // Route to store image data in the database
 app.post('/api/userdata', async (req, res) => {
   try {
