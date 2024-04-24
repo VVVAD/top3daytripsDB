@@ -107,24 +107,7 @@ app.get("/api/userData/:userId", async (req, res) => {
   }
 });
 
-app.post("/api/userData", async (req, res) => {
-  try {
-    const { imageData } = req.body;
-    const user = new UserModel({
-      imageData
-    });
-    const data = await user.save();
-    deleteKeys('User')
-    return res.status(200).json({
-      msg: "Ok",
-      data,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      msg: error.message,
-    });
-  }
-});
+
 
 // Route to update the image data
 app.put('/api/userdata/:userId', async (req, res) => {
